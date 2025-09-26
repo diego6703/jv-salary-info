@@ -33,8 +33,8 @@ public class SalaryInfo {
                             = Integer.parseInt(singleEmployeeData[Constants.HOURS_INDEX]);
                     singleEmployeeEarningsPerHour
                             = Integer.parseInt(singleEmployeeData[Constants.RATE_INDEX]);
-                    singleEmployeeEarnings = singleEmployeeHoursWorked *
-                            singleEmployeeEarningsPerHour;
+                    singleEmployeeEarnings = singleEmployeeHoursWorked
+                            * singleEmployeeEarningsPerHour;
                     employeesEarnings[findEmployeeIndex(names,
                             singleEmployeeName, numberOfEmployees)]
                             += singleEmployeeEarnings;
