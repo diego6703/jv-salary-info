@@ -31,7 +31,8 @@ public class SalaryInfo {
             } catch (ParseException e) {
                 throw new RuntimeException(Constants.WRONG_DATE_FORMAT_MESSAGE);
             }
-            if (singleEmployeeWorkingDayDate >= startDate && singleEmployeeWorkingDayDate <= endDate) {
+            if (singleEmployeeWorkingDayDate >= startDate
+                    && singleEmployeeWorkingDayDate <= endDate) {
                 singleEmployeeName = singleEmployeeData[1];
                 singleEmployeeHoursWorked = Integer.parseInt(singleEmployeeData[2]);
                 singleEmployeeEarningsPerHour = Integer.parseInt(singleEmployeeData[3]);
@@ -53,7 +54,6 @@ public class SalaryInfo {
                     .append(Constants.DATA_LIST_SEPARATOR)
                     .append(employeesEarnings[i]);
         }
-
         return sb.toString();
     }
 
