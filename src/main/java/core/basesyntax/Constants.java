@@ -1,5 +1,4 @@
 package core.basesyntax;
-
 public class Constants {
     public static final String PARSE_FORMAT = "dd.MM.yyyy";
     public static final String WRONG_DATE_FORMAT_MESSAGE = "wrong date format";
@@ -10,4 +9,5 @@ public class Constants {
     public static final int NAME_INDEX = 1;
     public static final int HOURS_INDEX = 2;
     public static final int RATE_INDEX = 3;
+    public static final int USER_INFO_SIZE = 4;
 }

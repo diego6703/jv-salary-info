@@ -4,38 +4,41 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class SalaryInfo {
-    private static final DateTimeFormatter dateFormat
+    private static final DateTimeFormatter DATE_FORMATTER
             = DateTimeFormatter.ofPattern(Constants.PARSE_FORMAT);
 
     public String getSalaryInfo(String[] names, String[] data, String dateFrom, String dateTo) {
         StringBuilder sb = new StringBuilder();
         int numberOfEmployees = names.length;
         int[] employeesEarnings = new int[numberOfEmployees];
-        String[] singleEmployeeData;
+        String[] singleEmployeeData = new String[Constants.USER_INFO_SIZE];
         String singleEmployeeName;
         LocalDate singleEmployeeWorkingDayDate;
-        LocalDate startDate = LocalDate.parse(dateFrom, dateFormat);
-        LocalDate endDate = LocalDate.parse(dateTo, dateFormat);
+        LocalDate startDate = LocalDate.parse(dateFrom, DATE_FORMATTER);
+        LocalDate endDate = LocalDate.parse(dateTo, DATE_FORMATTER);
         int singleEmployeeHoursWorked;
         int singleEmployeeEarningsPerHour;
         int singleEmployeeEarnings;
         for (String employeeData : data) {
             singleEmployeeData = employeeData.split(Constants.DATA_SPLIT_SEPARATOR);
-            singleEmployeeWorkingDayDate
-                    = LocalDate.parse(singleEmployeeData[Constants.DATE_INDEX], dateFormat);
-            if ((singleEmployeeWorkingDayDate.isAfter(startDate)
-                    || singleEmployeeWorkingDayDate.isEqual(startDate))
-                    && (singleEmployeeWorkingDayDate.isBefore(endDate)
-                    || singleEmployeeWorkingDayDate.isEqual(endDate))) {
-                singleEmployeeName = singleEmployeeData[Constants.NAME_INDEX];
-                singleEmployeeHoursWorked
-                        = Integer.parseInt(singleEmployeeData[Constants.HOURS_INDEX]);
-                singleEmployeeEarningsPerHour
-                        = Integer.parseInt(singleEmployeeData[Constants.RATE_INDEX]);
-                singleEmployeeEarnings = singleEmployeeHoursWorked * singleEmployeeEarningsPerHour;
-                employeesEarnings[findEmployeeIndex(names, singleEmployeeName, numberOfEmployees)]
-                        += singleEmployeeEarnings;
+            if (singleEmployeeData.length == Constants.USER_INFO_SIZE) {
+                singleEmployeeWorkingDayDate
+                        = LocalDate.parse(singleEmployeeData[Constants.DATE_INDEX], DATE_FORMATTER);
+                if ((singleEmployeeWorkingDayDate.isAfter(startDate)
+                        || singleEmployeeWorkingDayDate.isEqual(startDate))
+                        && (singleEmployeeWorkingDayDate.isBefore(endDate)
+                        || singleEmployeeWorkingDayDate.isEqual(endDate))) {
+                    singleEmployeeName = singleEmployeeData[Constants.NAME_INDEX];
+                    singleEmployeeHoursWorked
+                            = Integer.parseInt(singleEmployeeData[Constants.HOURS_INDEX]);
+                    singleEmployeeEarningsPerHour
+                            = Integer.parseInt(singleEmployeeData[Constants.RATE_INDEX]);
+                    singleEmployeeEarnings = singleEmployeeHoursWorked * singleEmployeeEarningsPerHour;
+                    employeesEarnings[findEmployeeIndex(names, singleEmployeeName, numberOfEmployees)]
+                            += singleEmployeeEarnings;
+                }
             }
+
         }
         sb.append(Constants.REPORT_BEGINNING)
                 .append(dateFrom)
@@ -56,6 +59,6 @@ public class SalaryInfo {
                 return i;
             }
         }
-        return 0;
+        return -1;
     }
 }
