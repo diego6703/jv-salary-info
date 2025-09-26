@@ -1,10 +1,11 @@
 package core.basesyntax;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class SalaryInfo {
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat(Constants.PARSE_FORMAT);
+    private static final DateTimeFormatter dateFormat
+            = DateTimeFormatter.ofPattern(Constants.PARSE_FORMAT);
 
     public String getSalaryInfo(String[] names, String[] data, String dateFrom, String dateTo) {
         StringBuilder sb = new StringBuilder();
@@ -12,42 +13,33 @@ public class SalaryInfo {
         int[] employeesEarnings = new int[numberOfEmployees];
         String[] singleEmployeeData;
         String singleEmployeeName;
-        long singleEmployeeWorkingDayDate;
-        long startDate;
-        long endDate;
+        LocalDate singleEmployeeWorkingDayDate;
+        LocalDate startDate = LocalDate.parse(dateFrom, dateFormat);
+        LocalDate endDate = LocalDate.parse(dateTo, dateFormat);
         int singleEmployeeHoursWorked;
         int singleEmployeeEarningsPerHour;
         int singleEmployeeEarnings;
-        try {
-            startDate = dateFormat.parse(dateFrom).getTime();
-            endDate = dateFormat.parse(dateTo).getTime();
-        } catch (ParseException e) {
-            throw new RuntimeException(Constants.WRONG_DATE_FORMAT_MESSAGE);
-        }
         for (String employeeData : data) {
             singleEmployeeData = employeeData.split(Constants.DATA_SPLIT_SEPARATOR);
-            try {
-                singleEmployeeWorkingDayDate = dateFormat.parse(singleEmployeeData[0]).getTime();
-            } catch (ParseException e) {
-                throw new RuntimeException(Constants.WRONG_DATE_FORMAT_MESSAGE);
-            }
-            if (singleEmployeeWorkingDayDate >= startDate
-                    && singleEmployeeWorkingDayDate <= endDate) {
-                singleEmployeeName = singleEmployeeData[1];
-                singleEmployeeHoursWorked = Integer.parseInt(singleEmployeeData[2]);
-                singleEmployeeEarningsPerHour = Integer.parseInt(singleEmployeeData[3]);
+            singleEmployeeWorkingDayDate
+                    = LocalDate.parse(singleEmployeeData[Constants.DATE_INDEX], dateFormat);
+            if ((singleEmployeeWorkingDayDate.isAfter(startDate)
+                    || singleEmployeeWorkingDayDate.isEqual(startDate))
+                    && (singleEmployeeWorkingDayDate.isBefore(endDate)
+                    || singleEmployeeWorkingDayDate.isEqual(endDate))) {
+                singleEmployeeName = singleEmployeeData[Constants.NAME_INDEX];
+                singleEmployeeHoursWorked
+                        = Integer.parseInt(singleEmployeeData[Constants.HOURS_INDEX]);
+                singleEmployeeEarningsPerHour
+                        = Integer.parseInt(singleEmployeeData[Constants.RATE_INDEX]);
                 singleEmployeeEarnings = singleEmployeeHoursWorked * singleEmployeeEarningsPerHour;
-                for (int i = 0; i < numberOfEmployees; i++) {
-                    if (singleEmployeeName.equals(names[i])) {
-                        employeesEarnings[i] += singleEmployeeEarnings;
-                    }
-                }
+                employeesEarnings[findEmployeeIndex(names, singleEmployeeName, numberOfEmployees)]
+                        += singleEmployeeEarnings;
             }
         }
         sb.append(Constants.REPORT_BEGINNING)
                 .append(dateFrom)
                 .append(Constants.DATA_LIST_SEPARATOR).append(dateTo);
-
         for (int i = 0; i < numberOfEmployees; i++) {
             sb.append(System.lineSeparator())
                     .append(names[i])
@@ -57,5 +49,13 @@ public class SalaryInfo {
         return sb.toString();
     }
 
-
+    private int findEmployeeIndex(String[] employeeNames,
+                                  String employeeName, int numberOfEmployees) {
+        for (int i = 0; i < numberOfEmployees; i++) {
+            if (employeeName.equals(employeeNames[i])) {
+                return i;
+            }
+        }
+        return 0;
+    }
 }
