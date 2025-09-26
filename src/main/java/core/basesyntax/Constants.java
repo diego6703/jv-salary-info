@@ -1,4 +1,5 @@
 package core.basesyntax;
+
 public class Constants {
     public static final String PARSE_FORMAT = "dd.MM.yyyy";
     public static final String WRONG_DATE_FORMAT_MESSAGE = "wrong date format";
